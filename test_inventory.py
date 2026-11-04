@@ -4,11 +4,25 @@ from inventory import (
     calculate_stock_value,
     is_low_stock,
     calculate_inventory_value,
-    calculate_total_units
+    calculate_total_units,
+    count_low_stock
 )
 
 
 class TestInventory(unittest.TestCase):
+
+    
+    def test_count_low_stock(self):
+        products = [
+            {"quantity": 2},
+            {"quantity": 8},
+            {"quantity": 4}
+        ]
+
+        result = count_low_stock(products)
+
+        self.assertEqual(result, 2)
+
 
     def test_stock_value(self):
         result = calculate_stock_value(30, 12)
