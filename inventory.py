@@ -99,10 +99,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-print("Total Units:", calculate_total_units([
-    {"quantity": 12},
-    {"quantity": 3},
-    {"quantity": 7},
-    {"quantity": 2},
-    {"quantity": 4}
-]))
+
