@@ -31,6 +31,16 @@ def calculate_total_units(products):
 
     return total
 
+def count_low_stock(products, threshold=5):
+    count = 0
+
+    for product in products:
+        if is_low_stock(product["quantity"], threshold):
+            count += 1
+
+    return count
+
+    
 
 def load_inventory(file_path):
     products = []
