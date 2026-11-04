@@ -7,6 +7,7 @@ A Python inventory analysis tool that reads CSV files, calculates stock value, d
 - Read inventory data from a CSV file
 - Calculate total inventory value in USD
 - Detect low-stock products
+- Count the number of low-stock products
 - Configure the low-stock threshold in code
 - Calculate the total number of stock units
 - Validate basic CSV input data
@@ -46,6 +47,8 @@ No external dependencies are required.
     USB Cable | Qty: 4 | Value: $40 | LOW STOCK
     ------------------------
     Total Inventory Value: $1645
+    Total Units: 28
+    Low Stock Products: 3
 
 ## Automated Testing
 
@@ -53,11 +56,11 @@ Run:
 
     py -m unittest -v
 
-The project includes seven unit tests covering inventory calculations, stock thresholds, and total unit counts.
+The project includes eight unit tests covering inventory calculations, stock thresholds, total unit counts, and low-stock product counts.
 
 Expected summary:
 
-    Ran 7 tests
+    Ran 8 tests
     OK
 
 ## Future Improvements
