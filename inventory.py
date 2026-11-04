@@ -60,13 +60,10 @@ def load_inventory(file_path):
     return products
 
 
-def generate_report(products, threshold=5):
-    total_value = calculate_inventory_value(products)
-    
+
 def generate_report(products, threshold=5):
     total_value = calculate_inventory_value(products)
     total_units = calculate_total_units(products)
-
 
     print("=== INVENTORY REPORT ===")
 
@@ -89,10 +86,8 @@ def generate_report(products, threshold=5):
 
     print("------------------------")
     print(f"Total Inventory Value: ${total_value}")
-    
-    print("------------------------")
-    print(f"Total Inventory Value: ${total_value}")
     print(f"Total Units: {total_units}")
+
 
 
 
