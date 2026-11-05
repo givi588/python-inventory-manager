@@ -102,14 +102,29 @@ def generate_report(products, threshold=5):
 
 
 
+def export_inventory_report(products, output_path, threshold=5):
+    with open(output_path, "w", encoding="utf-8", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow(["name", "quantity", "stock_value", "status"])
+        for product in products:
+            name = product["name"]
+            quantity = product["quantity"]
+            stock_value = calculate_stock_value(product["price"], quantity)
+            status = "LOW STOCK" if is_low_stock(quantity, threshold) else "OK"
+            writer.writerow([name, quantity, stock_value, status])
+
+
 def main():
     file_path = Path(__file__).resolve().parent / "inventory.csv"
 
     try:
         products = load_inventory(file_path)
         generate_report(products)
+        output_path = Path(__file__).resolve().parent / "inventory_report.csv"
+        export_inventory_report(products, output_path)
+        print("CSV report exported successfully.")
 
-    except (FileNotFoundError, ValueError, KeyError, TypeError) as error:
+    except (FileNotFoundError, ValueError, KeyError, TypeError, OSError) as error:
         print("Error:", error)
 
 
