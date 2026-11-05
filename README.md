@@ -1,6 +1,10 @@
 # Python Inventory Manager
 
-A small Python tool for reviewing inventory levels, calculating stock value, and exporting a CSV report that can be opened in spreadsheet software.
+A Python tool that demonstrates how a small business could review inventory, identify low-stock products, and export reports for Excel.
+
+## What it solves
+
+A shop manager may need a quick overview of which items are running low and how much stock is currently worth. This sample program reads a CSV inventory list, prints a summary, and creates a report that can be opened in Excel. It uses example data and is not connected to a live shop.
 
 ## Features
 
@@ -77,7 +81,7 @@ Headphones,2,120,LOW STOCK
 USB Cable,4,40,LOW STOCK
 ```
 
-## Tests
+## Tests and verification
 
 Run:
 
@@ -86,6 +90,8 @@ py -m unittest -v
 ```
 
 There are 13 unit tests covering inventory calculations, low-stock thresholds, unit counts, CSV export, and input validation. Validation tests cover negative prices, invalid quantities, empty product names, and missing columns. File-based tests use temporary directories without changing the sample inventory.
+
+[GitHub Actions test history](https://github.com/givi588/python-inventory-manager/actions) shows automated checks for changes pushed to the repository. A green run means the configured test command completed successfully; it does not guarantee production readiness.
 
 ## Files
 
