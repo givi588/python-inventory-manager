@@ -1,5 +1,3 @@
-# Python Inventory Manager
-
 import csv
 from pathlib import Path
 
@@ -13,82 +11,72 @@ def is_low_stock(quantity, threshold=5):
 
 
 def calculate_inventory_value(products):
-    total = 0
+    return sum(
+        calculate_stock_value(product["price"], product["quantity"])
+        for product in products
+    )
 
-    for product in products:
-        total += calculate_stock_value(
-            product["price"],
-            product["quantity"]
-        )
-
-    return total
 
 def calculate_total_units(products):
-    total = 0
+    return sum(product["quantity"] for product in products)
 
-    for product in products:
-        total += product["quantity"]
-
-    return total
 
 def count_low_stock(products, threshold=5):
-    count = 0
+    return sum(
+        is_low_stock(product["quantity"], threshold)
+        for product in products
+    )
 
-    for product in products:
-        if is_low_stock(product["quantity"], threshold):
-            count += 1
-
-    return count
-
-    
 
 def load_inventory(file_path):
     products = []
 
     with open(file_path, "r", encoding="utf-8-sig", newline="") as file:
         reader = csv.DictReader(file, skipinitialspace=True)
-
         required_columns = {"name", "price", "quantity"}
 
         if not required_columns.issubset(reader.fieldnames or []):
-            raise ValueError("Invalid CSV columns.")
+            raise ValueError("CSV must contain name, price, and quantity columns.")
 
-        for row in reader:
-            name = row["name"].strip()
-            price = int(row["price"])
-            quantity = int(row["quantity"])
+        for line_number, row in enumerate(reader, start=2):
+            try:
+                name = row["name"].strip()
+                price = int(row["price"])
+                quantity = int(row["quantity"])
+            except (ValueError, TypeError, AttributeError):
+                raise ValueError(
+                    f"Invalid data on line {line_number}."
+                ) from None
 
-            if not name or price < 0 or quantity < 0:
-                raise ValueError("Invalid product data.")
+            if not name:
+                raise ValueError(
+                    f"Product name is missing on line {line_number}."
+                )
+
+            if price < 0 or quantity < 0:
+                raise ValueError(
+                    f"Negative price or quantity on line {line_number}."
+                )
 
             products.append({
                 "name": name,
                 "price": price,
-                "quantity": quantity
+                "quantity": quantity,
             })
 
     return products
 
 
-
 def generate_report(products, threshold=5):
-    total_value = calculate_inventory_value(products)
-    total_units = calculate_total_units(products)
-    low_stock_count = count_low_stock(products, threshold)
-
     print("=== INVENTORY REPORT ===")
 
     for product in products:
         name = product["name"]
         quantity = product["quantity"]
-        price = product["price"]
-
-        stock_value = calculate_stock_value(price, quantity)
-
-        if is_low_stock(quantity, threshold):
-            status = "LOW STOCK"
-        else:
-            status = "OK"
+        stock_value = calculate_stock_value(
+            product["price"], quantity
+        )
+        status = "LOW STOCK" if is_low_stock(quantity, threshold) else "OK"
 
         print(
             f"{name} | Qty: {quantity} | "
@@ -96,38 +84,45 @@ def generate_report(products, threshold=5):
         )
 
     print("------------------------")
-    print(f"Total Inventory Value: ${total_value}")
-    print(f"Total Units: {total_units}")
-    print(f"Low Stock Products: {low_stock_count}")
-
+    print(f"Total Inventory Value: ${calculate_inventory_value(products)}")
+    print(f"Total Units: {calculate_total_units(products)}")
+    print(f"Low Stock Products: {count_low_stock(products, threshold)}")
 
 
 def export_inventory_report(products, output_path, threshold=5):
     with open(output_path, "w", encoding="utf-8", newline="") as file:
         writer = csv.writer(file)
         writer.writerow(["name", "quantity", "stock_value", "status"])
+
         for product in products:
-            name = product["name"]
             quantity = product["quantity"]
-            stock_value = calculate_stock_value(product["price"], quantity)
+            stock_value = calculate_stock_value(
+                product["price"], quantity
+            )
             status = "LOW STOCK" if is_low_stock(quantity, threshold) else "OK"
-            writer.writerow([name, quantity, stock_value, status])
+
+            writer.writerow([
+                product["name"],
+                quantity,
+                stock_value,
+                status,
+            ])
 
 
 def main():
-    file_path = Path(__file__).resolve().parent / "inventory.csv"
+    folder = Path(__file__).resolve().parent
+    input_path = folder / "inventory.csv"
+    output_path = folder / "inventory_report.csv"
 
     try:
-        products = load_inventory(file_path)
+        products = load_inventory(input_path)
         generate_report(products)
-        output_path = Path(__file__).resolve().parent / "inventory_report.csv"
         export_inventory_report(products, output_path)
         print("CSV report exported successfully.")
 
-    except (FileNotFoundError, ValueError, KeyError, TypeError, OSError) as error:
-        print("Error:", error)
+    except (OSError, ValueError) as error:
+        print(f"Error: {error}")
 
 
 if __name__ == "__main__":
     main()
-
