@@ -9,7 +9,8 @@ A small Python tool for reviewing inventory levels, calculating stock value, and
 - Identify products at or below a configurable low-stock threshold (default: 5)
 - Print a summary in the terminal
 - Export product quantities, stock values, and statuses to `inventory_report.csv`
-- Reject missing CSV columns, empty names, and negative prices or quantities
+- Validate CSV columns, product names, integer prices and quantities, and nonnegative values
+- Report the line number for invalid product data
 - Run unit tests for calculations and CSV export
 
 ## Requirements
@@ -84,7 +85,7 @@ Run:
 py -m unittest -v
 ```
 
-There are nine unit tests covering inventory calculations, low-stock thresholds, unit counts, and CSV export. The export test uses a temporary directory and checks the output file's content.
+There are 13 unit tests covering inventory calculations, low-stock thresholds, unit counts, CSV export, and input validation. Validation tests cover negative prices, invalid quantities, empty product names, and missing columns. File-based tests use temporary directories without changing the sample inventory.
 
 ## Files
 
