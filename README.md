@@ -1,80 +1,98 @@
 # Python Inventory Manager
 
-A Python inventory analysis tool that reads CSV files, calculates stock value, detects low-stock products, and includes automated unit tests.
+A small Python tool for reviewing inventory levels, calculating stock value, and exporting a CSV report that can be opened in spreadsheet software.
 
 ## Features
 
-- Read inventory data from a CSV file
-- Calculate total inventory value in USD
-- Detect low-stock products
-- Count the number of low-stock products
-- Configure the low-stock threshold in code
-- Calculate the total number of stock units
-- Validate basic CSV input data
-- Run automated tests with unittest
+- Read product names, prices, and quantities from `inventory.csv`
+- Calculate inventory value and total units in stock
+- Identify products at or below a configurable low-stock threshold (default: 5)
+- Print a summary in the terminal
+- Export product quantities, stock values, and statuses to `inventory_report.csv`
+- Reject missing CSV columns, empty names, and negative prices or quantities
+- Run unit tests for calculations and CSV export
 
-## Technologies
+## Requirements
 
-- Python 3
-- csv
-- pathlib
-- unittest
+Python 3. No third-party packages required.
 
-No external dependencies are required.
+## Run
 
-## Project Structure
+Download or clone the repository, then open a terminal in the project folder.
 
-- `inventory.py` - Main inventory application
-- `inventory.csv` - Sample inventory data
-- `test_inventory.py` - Automated unit tests
+On Windows:
 
-## How to Run
+```powershell
+py inventory.py
+```
 
-1. Install Python 3.
-2. Download or clone this repository.
-3. Open a terminal in the project folder.
-4. Run the inventory report:
+On macOS or Linux:
 
-    py inventory.py
+```bash
+python3 inventory.py
+```
 
-## Example Output
+The script reads `inventory.csv` and creates or overwrites `inventory_report.csv` in the same folder. The source CSV is not modified.
 
-    === INVENTORY REPORT ===
-    Keyboard | Qty: 12 | Value: $360 | OK
-    Mouse | Qty: 3 | Value: $75 | LOW STOCK
-    Monitor | Qty: 7 | Value: $1050 | OK
-    Headphones | Qty: 2 | Value: $120 | LOW STOCK
-    USB Cable | Qty: 4 | Value: $40 | LOW STOCK
-    ------------------------
-    Total Inventory Value: $1645
-    Total Units: 28
-    Low Stock Products: 3
+## Input format
 
-## Automated Testing
+```csv
+name,price,quantity
+Keyboard,30,12
+Mouse,25,3
+Monitor,150,7
+Headphones,60,2
+USB Cable,10,4
+```
+
+Prices and quantities are currently handled as integers.
+
+## Example terminal output
+
+```text
+=== INVENTORY REPORT ===
+Keyboard | Qty: 12 | Value: $360 | OK
+Mouse | Qty: 3 | Value: $75 | LOW STOCK
+Monitor | Qty: 7 | Value: $1050 | OK
+Headphones | Qty: 2 | Value: $120 | LOW STOCK
+USB Cable | Qty: 4 | Value: $40 | LOW STOCK
+------------------------
+Total Inventory Value: $1645
+Total Units: 28
+Low Stock Products: 3
+CSV report exported successfully.
+```
+
+## Exported CSV
+
+`inventory_report.csv` contains these columns:
+
+```csv
+name,quantity,stock_value,status
+Keyboard,12,360,OK
+Mouse,3,75,LOW STOCK
+Monitor,7,1050,OK
+Headphones,2,120,LOW STOCK
+USB Cable,4,40,LOW STOCK
+```
+
+## Tests
 
 Run:
 
-    py -m unittest -v
+```powershell
+py -m unittest -v
+```
 
-The project includes eight unit tests covering inventory calculations, stock thresholds, total unit counts, and low-stock product counts.
+There are nine unit tests covering inventory calculations, low-stock thresholds, unit counts, and CSV export. The export test uses a temporary directory and checks the output file's content.
 
-Expected summary:
+## Files
 
-    Ran 8 tests
-    OK
+- `inventory.py` — inventory calculations, reporting, and CSV export
+- `inventory.csv` — sample input data
+- `test_inventory.py` — automated unit tests
+- `inventory_report.csv` — generated output (created when the script runs)
 
-## Future Improvements
+## Limitations
 
-- Export reports to CSV
-- Support decimal prices
-- Add more input validation tests
-- Provide interactive inventory management
-- Build a web dashboard
-
-## Project Status
-
-Educational prototype. Not yet intended for production inventory management.
-
-## Author
-
-GitHub: [givi588](https://github.com/givi588)
+This is a learning project, not a production inventory system. It expects integer prices and quantities, uses a fixed CSV structure, and does not support editing stock or tracking transactions. Running the script again overwrites the previously exported report.
